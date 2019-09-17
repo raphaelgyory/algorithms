@@ -1,2 +1,2 @@
 # algorithms
-This repository contains implementations of algorithms using python/numpy for teaching purpose.
+This repository contains AI algorithms implemented in python/numpy for educational purposes.
