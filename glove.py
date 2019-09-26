@@ -2,9 +2,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 class Glove(object):
-    
+
     def __init__(self, tokens, coocurrence_matrix, word_dimensions=100, x_max=100, alpha=0.75, learning_rate=0.05):
         self.tokens =                   tokens
+        # note that for the cooccurrence matrix you will probably use a sparse matrix
+        # gist here: https://gist.github.com/raphaelgyory/dae3ad9afbbfc0591f653844ca77df5b
         self.X =                        coocurrence_matrix
         self.learning_rate =            learning_rate
         # initialize the word vector
@@ -52,20 +54,20 @@ class Glove(object):
     def get_cost(self, unweighted_costs):
         J = np.sum(np.sum(self.weights * unweighted_costs**2, axis=1), axis=0)
         return J
-    
+
     def get_gradients(self, unweighted_costs):
         weighted_costs = np.sum(self.weights * unweighted_costs, axis=0)
         return (2 * weighted_costs[:,None] * self.W_context,  # gradients_word
                 2 * weighted_costs[:,None] * self.W,          # gradients_context
                 2 * weighted_costs,                           # gradients_word_bias
                 2 * weighted_costs)                           # gradients_context_bias
-    
+
     def adagrad(self, gradients_word, gradients_context, gradients_word_bias, gradients_context_bias):
         self.W -=             self.learning_rate * gradients_word / np.sqrt(self.W_gradients)
         self.W_context -=     self.learning_rate * gradients_context / np.sqrt(self.W_context_gradients)
         self.biases -=        self.learning_rate * gradients_word_bias / np.sqrt(self.biases_gradients)
         self.biases_context-= self.learning_rate * gradients_context_bias / np.sqrt(self.biases_context_gradients)
-    
+
     def update_gradients(self, gradients_word, gradients_context, gradients_word_bias, gradients_context_bias):
         self.W_gradients +=              gradients_word**2
         self.W_context_gradients +=      gradients_context**2
